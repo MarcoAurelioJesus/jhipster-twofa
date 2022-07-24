@@ -1,0 +1,9 @@
+:host {
+  --test_image: none;
+}
+
+.image-qrcode {
+  width: auto;
+  min-height: 360px;
+  background: var(--test_image);
+}

@@ -5,7 +5,8 @@
       "password": "Password",
       "password.placeholder": "Your password",
       "rememberme": "Remember me",
-      "button": "Sign in"
+      "button": "Sign in",
+      "twofa": "2 FA"
     },
     "messages": {
       "error": {
