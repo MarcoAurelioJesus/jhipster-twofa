@@ -17,7 +17,8 @@ export class TwoFaComponent implements OnInit {
   twofa!: ElementRef;
   account!: Account;
   test_image!: string;
-
+  qrCodeImage = '';
+  isUsing2FA = false;
   authenticationError = false;
 
   checkoutForm = this.fb.group({
@@ -62,7 +63,7 @@ export class TwoFaComponent implements OnInit {
 
   createQRCode(): void {
     this.test_image = `${this.account.login}_QRCode.png`;
-    this.elRef.nativeElement.style.setProperty('--test_image', `url(${this.test_image.toString()})`);
+    this.elRef.nativeElement.style.setProperty('--test_image', `url('${this.test_image.toString()}')`);
     console.warn('this.test_image======= ', this.test_image);
   }
 
@@ -71,19 +72,32 @@ export class TwoFaComponent implements OnInit {
     this.account.lastName = this.settingsForm.get('lastName')!.value;
     this.account.email = this.settingsForm.get('email')!.value;
     this.account.langKey = this.settingsForm.get('langKey')!.value;
-    this.twoFaService.createtwofa(this.account).subscribe({
-      next: () => {
+    this.twoFaService.createtwofa(this.account).subscribe(
+      data => {
         this.authenticationError = false;
+        if (data.isImageQRCode) {
+          this.isUsing2FA = true;
+          this.qrCodeImage = data.imageUrl;
+        }
         if (!this.router.getCurrentNavigation()) {
           // There were no routing during login (eg from navigationToStoredUrl)
           this.router.navigate(['/twofa']);
         }
       },
-      error: () => (this.authenticationError = true),
-    });
+      err => {
+        this.authenticationError = true;
+      }
+    );
     this.createQRCode();
   }
 
+  returnTwoFaAutenticate(): void {
+    if (!this.router.getCurrentNavigation()) {
+      console.warn('Register!');
+      // There were no routing during login (eg from navigationToStoredUrl)
+      this.router.navigate(['/verify']);
+    }
+  }
   onSubmit(): void {
     console.warn('Your order has been submitted', this.checkoutForm.value);
     this.checkoutForm.reset();

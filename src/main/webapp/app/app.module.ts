@@ -1,4 +1,5 @@
 import { NgModule, LOCALE_ID } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import locale from '@angular/common/locales/en';
@@ -26,9 +27,11 @@ import { PageRibbonComponent } from './layouts/profiles/page-ribbon.component';
 import { ActiveMenuDirective } from './layouts/navbar/active-menu.directive';
 import { ErrorComponent } from './layouts/error/error.component';
 import { TwoFaModule } from './two-fa/two-fa.module';
+import { TwoFaVerifyModule } from './two-fa-verify/two-fa-verify.module';
 
 @NgModule({
   imports: [
+    CommonModule,
     BrowserModule,
     SharedModule,
     HomeModule,
@@ -40,6 +43,7 @@ import { TwoFaModule } from './two-fa/two-fa.module';
     NgxWebstorageModule.forRoot({ prefix: 'jhi', separator: '-', caseSensitive: true }),
     TranslationModule,
     TwoFaModule,
+    TwoFaVerifyModule,
   ],
   providers: [
     Title,

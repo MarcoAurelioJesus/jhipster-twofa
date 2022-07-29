@@ -4,7 +4,8 @@ import com.mycompany.myapp.service.dto.AdminUserDTO;
 import javax.validation.constraints.Size;
 
 /**
- * View Model extending the AdminUserDTO, which is meant to be used in the user management UI.
+ * View Model extending the AdminUserDTO, which is meant to be used in the user
+ * management UI.
  */
 public class ManagedUserVM extends AdminUserDTO {
 
@@ -14,6 +15,9 @@ public class ManagedUserVM extends AdminUserDTO {
 
     @Size(min = PASSWORD_MIN_LENGTH, max = PASSWORD_MAX_LENGTH)
     private String password;
+
+    @Size(min = 1, max = 50)
+    private String twofacode;
 
     public ManagedUserVM() {
         // Empty constructor needed for Jackson.
@@ -25,6 +29,14 @@ public class ManagedUserVM extends AdminUserDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getTwofacode() {
+        return twofacode;
+    }
+
+    public void setTwofacode(String twofacode) {
+        this.twofacode = twofacode;
     }
 
     // prettier-ignore

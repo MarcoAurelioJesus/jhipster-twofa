@@ -48,8 +48,14 @@ public class AdminUserDTO {
 
     private Set<String> authorities;
 
+    private Boolean isImageQRCode;
+
     public AdminUserDTO() {
         // Empty constructor needed for Jackson.
+    }
+
+    public AdminUserDTO(String string) {
+        this.imageUrl = getImageUrl();
     }
 
     public AdminUserDTO(User user) {
@@ -59,7 +65,7 @@ public class AdminUserDTO {
         this.lastName = user.getLastName();
         this.email = user.getEmail();
         this.activated = user.isActivated();
-        this.imageUrl = user.getImageUrl();
+
         this.langKey = user.getLangKey();
         this.createdBy = user.getCreatedBy();
         this.createdDate = user.getCreatedDate();
@@ -160,6 +166,14 @@ public class AdminUserDTO {
         return lastModifiedDate;
     }
 
+    public void setIsImageQRCode(Boolean isImageQRCode) {
+        this.isImageQRCode = isImageQRCode;
+    }
+
+    public Boolean getIsImageQRCode() {
+        return isImageQRCode;
+    }
+
     public void setLastModifiedDate(Instant lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
@@ -176,18 +190,18 @@ public class AdminUserDTO {
     @Override
     public String toString() {
         return "AdminUserDTO{" +
-            "login='" + login + '\'' +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", email='" + email + '\'' +
-            ", imageUrl='" + imageUrl + '\'' +
-            ", activated=" + activated +
-            ", langKey='" + langKey + '\'' +
-            ", createdBy=" + createdBy +
-            ", createdDate=" + createdDate +
-            ", lastModifiedBy='" + lastModifiedBy + '\'' +
-            ", lastModifiedDate=" + lastModifiedDate +
-            ", authorities=" + authorities +
-            "}";
+                "login='" + login + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", activated=" + activated +
+                ", langKey='" + langKey + '\'' +
+                ", createdBy=" + createdBy +
+                ", createdDate=" + createdDate +
+                ", lastModifiedBy='" + lastModifiedBy + '\'' +
+                ", lastModifiedDate=" + lastModifiedDate +
+                ", authorities=" + authorities +
+                "}";
     }
 }

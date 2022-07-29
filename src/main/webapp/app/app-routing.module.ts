@@ -36,6 +36,10 @@ import { UserRouteAccessService } from 'app/core/auth/user-route-access.service'
           path: 'twofa',
           loadChildren: () => import(`./two-fa/two-fa.module`).then(m => m.TwoFaModule),
         },
+        {
+          path: 'verify',
+          loadChildren: () => import(`./two-fa-verify/two-fa-verify.module`).then(m => m.TwoFaVerifyModule),
+        },
         navbarRoute,
         ...errorRoute,
       ],

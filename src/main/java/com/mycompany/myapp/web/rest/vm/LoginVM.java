@@ -46,8 +46,8 @@ public class LoginVM {
     @Override
     public String toString() {
         return "LoginVM{" +
-            "username='" + username + '\'' +
-            ", rememberMe=" + rememberMe +
-            '}';
+                "username='" + username + '\'' +
+                ", rememberMe=" + rememberMe +
+                '}';
     }
 }

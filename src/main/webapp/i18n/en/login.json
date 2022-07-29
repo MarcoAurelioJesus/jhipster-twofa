@@ -6,7 +6,8 @@
       "password.placeholder": "Your password",
       "rememberme": "Remember me",
       "button": "Sign in",
-      "twofa": "2 FA"
+      "twofa": "Submit",
+      "twofa.register": "Register"
     },
     "messages": {
       "error": {
@@ -15,6 +16,12 @@
     },
     "password": {
       "forgot": "Did you forget your password?"
+    },
+    "twofaverify": {
+      "title": "TWO FA VERIFY",
+      "error": {
+        "authentication": "<strong>Failed to Verify Two FA!</strong> Please check your code and try again."
+      }
     }
   }
 }

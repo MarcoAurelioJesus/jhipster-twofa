@@ -4,14 +4,25 @@ import { Router } from '@angular/router';
 
 import { LoginService } from 'app/login/login.service';
 import { AccountService } from 'app/core/auth/account.service';
+import { AppConstants } from 'app/core/app.constants';
 
 @Component({
   selector: 'jhi-login',
   templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit, AfterViewInit {
   @ViewChild('username', { static: false })
   username!: ElementRef;
+  form: any = {};
+  isLoggedIn = false;
+  isLoginFailed = false;
+  errorMessage = '';
+  currentUser: any;
+  googleURL = AppConstants.GOOGLE_AUTH_URL;
+  facebookURL = AppConstants.FACEBOOK_AUTH_URL;
+  githubURL = AppConstants.GITHUB_AUTH_URL;
+  linkedinURL = AppConstants.LINKEDIN_AUTH_URL;
 
   authenticationError = false;
 
@@ -32,7 +43,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     // if already authenticated then navigate to home page
     this.accountService.identity().subscribe(() => {
       if (this.accountService.isAuthenticated()) {
-        this.router.navigate(['/twofa']);
+        this.router.navigate(['/verify']);
       }
     });
   }
@@ -48,15 +59,18 @@ export class LoginComponent implements OnInit, AfterViewInit {
         password: this.loginForm.get('password')!.value,
         rememberMe: this.loginForm.get('rememberMe')!.value,
       })
-      .subscribe({
-        next: () => {
+      .subscribe(
+        data => {
           this.authenticationError = false;
           if (!this.router.getCurrentNavigation()) {
             // There were no routing during login (eg from navigationToStoredUrl)
-            this.router.navigate(['/twofa']);
+            this.router.navigate(['/verify']);
           }
         },
-        error: () => (this.authenticationError = true),
-      });
+        err => {
+          this.errorMessage = err.error.message;
+          this.isLoginFailed = true;
+        }
+      );
   }
 }

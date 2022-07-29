@@ -1,0 +1,39 @@
+<div class="col-md-12">
+  <div class="card card-container">
+    <div class="form-group">
+      <label class="text-center font-weight-bold" jhiTranslate="login.twofaverify.title" data-cy="twofaverifyTitle">Two FA Verify</label>
+    </div>
+    <div
+      class="alert alert-danger"
+      *ngIf="authenticationError"
+      jhiTranslate="login.twofaverify.error.authentication"
+      data-cy="twofaverifyError"
+    >
+      <strong>Failed to sign in!</strong> Please check your credentials and try again.
+    </div>
+    <form role="form" (ngSubmit)="verify()" [formGroup]="loginForm">
+      <div class="form-group">
+        <label for="twofacode" jhiTranslate="global.form.twofacode.label">Code</label>
+        <input
+          type="text"
+          class="form-control"
+          name="twofacode"
+          id="twofacode"
+          placeholder="{{ 'global.form.twofacode.placeholder' | translate }}"
+          formControlName="twofacode"
+          #username
+          data-cy="twofacode"
+        />
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary btn-block" jhiTranslate="login.form.twofa" data-cy="submit">Sign in</button>
+        </div>
+      </div>
+    </form>
+    <div class="form-group">
+      <label>Click here to register 2FA!</label>
+      <div class="form-group">
+        <button (click)="register()" class="btn btn-primary btn-block" jhiTranslate="login.form.twofa.register">Cadastrar TWO FA</button>
+      </div>
+    </div>
+  </div>
+</div>

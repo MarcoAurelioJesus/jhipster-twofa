@@ -6,6 +6,7 @@ import { LocalStorageService, SessionStorageService } from 'ngx-webstorage';
 
 import { ApplicationConfigService } from '../config/application-config.service';
 import { Login } from 'app/login/login.model';
+import { TwoFaVerify } from 'app/two-fa-verify/two-fa-verify.model';
 
 type JwtToken = {
   id_token: string;
@@ -38,6 +39,12 @@ export class AuthServerProvider {
       this.sessionStorageService.clear('authenticationToken');
       observer.complete();
     });
+  }
+
+  verify(credentials: TwoFaVerify): Observable<void> {
+    return this.http
+      .post<JwtToken>(this.applicationConfigService.getEndpointFor('api/verify'), credentials.twofacode)
+      .pipe(map(response => this.authenticateSuccess(response, credentials.verifiedsucess)));
   }
 
   private authenticateSuccess(response: JwtToken, rememberMe: boolean): void {
