@@ -49,5 +49,5 @@ jobs:
         with:
           app-name: 'jhipstertwofa'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C3A260F8DDA042C0A597F2F786114077 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_BA11C0EC6118438C968FB556623F55F0 }}
           package: '*.war'
