@@ -43,7 +43,7 @@
       "confirmpassword.placeholder": "Confirm the new password",
       "email.label": "Email",
       "email.placeholder": "Your email",
-      "twofacode.label": "TWO FA CODE",
+      "twofacode.label": "Two FA Code",
       "twofacode.placeholder": "Your Code Two FA"
     },
     "messages": {
@@ -57,6 +57,9 @@
           "noaccount": "You don't have an account yet?",
           "link": "Register a new account"
         }
+      },
+      "twofa": {
+        "return": "Return Login"
       },
       "error": {
         "dontmatch": "The password and its confirmation do not match!"

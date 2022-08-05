@@ -17,6 +17,9 @@
     "password": {
       "forgot": "Did you forget your password?"
     },
+    "twofacreate": {
+      "create": "Create Two FA"
+    },
     "twofaverify": {
       "title": "TWO FA VERIFY",
       "error": {

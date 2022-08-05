@@ -19,6 +19,8 @@ public class JWTFilter extends GenericFilterBean {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
+    public static final String NOT_AUTHORIZATION_HEADER = "Not Authorization";
+
     private final TokenProvider tokenProvider;
 
     public JWTFilter(TokenProvider tokenProvider) {

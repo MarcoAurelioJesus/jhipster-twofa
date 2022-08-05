@@ -29,6 +29,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   loginForm = this.fb.group({
     username: [null, [Validators.required]],
     password: [null, [Validators.required]],
+    twofacode: [null, [Validators.required]],
     rememberMe: [false],
   });
 
@@ -43,7 +44,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     // if already authenticated then navigate to home page
     this.accountService.identity().subscribe(() => {
       if (this.accountService.isAuthenticated()) {
-        this.router.navigate(['/verify']);
+        this.router.navigate(['']);
       }
     });
   }
@@ -57,6 +58,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       .login({
         username: this.loginForm.get('username')!.value,
         password: this.loginForm.get('password')!.value,
+        twofacode: this.loginForm.get('twofacode')!.value,
         rememberMe: this.loginForm.get('rememberMe')!.value,
       })
       .subscribe(
@@ -64,7 +66,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
           this.authenticationError = false;
           if (!this.router.getCurrentNavigation()) {
             // There were no routing during login (eg from navigationToStoredUrl)
-            this.router.navigate(['/verify']);
+            this.router.navigate(['']);
           }
         },
         err => {
@@ -72,5 +74,13 @@ export class LoginComponent implements OnInit, AfterViewInit {
           this.isLoginFailed = true;
         }
       );
+  }
+
+  register(): void {
+    if (!this.router.getCurrentNavigation()) {
+      console.warn('Register!');
+      // There were no routing during login (eg from navigationToStoredUrl)
+      this.router.navigate(['/twofa']);
+    }
   }
 }

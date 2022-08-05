@@ -1,6 +1,7 @@
 import { Component, ViewChild, OnInit, AfterViewInit, ElementRef } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Account } from 'app/core/auth/account.model';
 
 import { AccountService } from 'app/core/auth/account.service';
 import { TwoFaVerifyService } from './two-fa-verify.service';
@@ -14,11 +15,19 @@ export class TwoFaVerifyComponent implements OnInit, AfterViewInit {
   @ViewChild('username', { static: false })
   username!: ElementRef;
   twofacode!: ElementRef;
+  account!: Account;
 
   authenticationError = false;
 
   loginForm = this.fb.group({
     twofacode: [null, [Validators.required]],
+  });
+
+  settingsForm = this.fb.group({
+    firstName: [undefined, [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
+    lastName: [undefined, [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
+    email: [undefined, [Validators.required, Validators.minLength(5), Validators.maxLength(254), Validators.email]],
+    langKey: [undefined],
   });
 
   constructor(
@@ -33,6 +42,18 @@ export class TwoFaVerifyComponent implements OnInit, AfterViewInit {
     this.accountService.identity().subscribe(() => {
       if (this.accountService.isAuthenticated()) {
         this.router.navigate(['/verify']);
+      }
+    });
+    this.accountService.identity().subscribe(account => {
+      if (account) {
+        this.settingsForm.patchValue({
+          firstName: account.firstName,
+          lastName: account.lastName,
+          email: account.email,
+          langKey: account.langKey,
+          twofacode: account.twoFACode,
+        });
+        this.account = account;
       }
     });
   }
@@ -50,7 +71,13 @@ export class TwoFaVerifyComponent implements OnInit, AfterViewInit {
   }
 
   verify(): void {
-    this.twoFaVerifyService.verify(this.loginForm.get('twofacode')!.value).subscribe({
+    this.account.firstName = this.settingsForm.get('firstName')!.value;
+    this.account.lastName = this.settingsForm.get('lastName')!.value;
+    this.account.email = this.settingsForm.get('email')!.value;
+    this.account.langKey = this.settingsForm.get('langKey')!.value;
+    this.account.twoFACode = this.loginForm.get('twofacode')!.value;
+    console.warn(this.loginForm.get('twofacode')!.value, "== this.settingsForm.get('twofacode')!.value;---");
+    this.twoFaVerifyService.verify(this.account).subscribe({
       next: () => {
         if (!this.router.getCurrentNavigation()) {
           console.warn('Autenticate true');

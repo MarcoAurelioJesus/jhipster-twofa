@@ -16,6 +16,10 @@ public class LoginVM {
     @Size(min = 4, max = 100)
     private String password;
 
+    @NotNull
+    @Size(min = 4, max = 100)
+    private String twofacode;
+
     private boolean rememberMe;
 
     public String getUsername() {
@@ -32,6 +36,14 @@ public class LoginVM {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getTwofacode() {
+        return twofacode;
+    }
+
+    public void setTwofacode(String twofacode) {
+        this.twofacode = twofacode;
     }
 
     public boolean isRememberMe() {

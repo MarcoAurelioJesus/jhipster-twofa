@@ -50,6 +50,8 @@ public class AdminUserDTO {
 
     private Boolean isImageQRCode;
 
+    private String twoFACode;
+
     public AdminUserDTO() {
         // Empty constructor needed for Jackson.
     }
@@ -166,12 +168,12 @@ public class AdminUserDTO {
         return lastModifiedDate;
     }
 
-    public void setIsImageQRCode(Boolean isImageQRCode) {
-        this.isImageQRCode = isImageQRCode;
+    public void setTwoFACode(String twoFACode) {
+        this.twoFACode = twoFACode;
     }
 
-    public Boolean getIsImageQRCode() {
-        return isImageQRCode;
+    public String getTwoFACode() {
+        return twoFACode;
     }
 
     public void setLastModifiedDate(Instant lastModifiedDate) {
@@ -184,6 +186,14 @@ public class AdminUserDTO {
 
     public void setAuthorities(Set<String> authorities) {
         this.authorities = authorities;
+    }
+
+    public void setIsImageQRCode(Boolean isImageQRCode) {
+        this.isImageQRCode = isImageQRCode;
+    }
+
+    public Boolean getIsImageQRCode() {
+        return isImageQRCode;
     }
 
     // prettier-ignore

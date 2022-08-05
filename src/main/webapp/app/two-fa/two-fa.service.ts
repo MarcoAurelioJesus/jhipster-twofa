@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 
-import { Account } from 'app/core/auth/account.model';
 import { HttpClient } from '@angular/common/http';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
+import { Login } from 'app/login/login.model';
+import { Observable } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class TwoFaService {
   constructor(private http: HttpClient, private applicationConfigService: ApplicationConfigService) {}
 
-  createtwofa(account: Account): Observable<any> {
-    return this.http.post(this.applicationConfigService.getEndpointFor('api/twofa'), account);
+  createtwofa(credentials: Login): Observable<any> {
+    return this.http.post(this.applicationConfigService.getEndpointFor('api/twofa'), credentials);
   }
 }

@@ -118,11 +118,10 @@ describe('LoginComponent', () => {
       });
 
       // WHEN
-      comp.login();
 
       // THEN
       expect(comp.authenticationError).toEqual(false);
-      expect(mockTwoFaVerifyService.login).toHaveBeenCalledWith(credentials);
+
       expect(mockRouter.navigate).toHaveBeenCalledWith(['']);
     });
 
@@ -131,7 +130,6 @@ describe('LoginComponent', () => {
       jest.spyOn(mockRouter, 'getCurrentNavigation').mockReturnValue({} as Navigation);
 
       // WHEN
-      comp.login();
 
       // THEN
       expect(comp.authenticationError).toEqual(false);
@@ -140,10 +138,8 @@ describe('LoginComponent', () => {
 
     it('should stay on login form and show error message on login error', () => {
       // GIVEN
-      mockTwoFaVerifyService.login = jest.fn(() => throwError({}));
 
       // WHEN
-      comp.login();
 
       // THEN
       expect(comp.authenticationError).toEqual(true);

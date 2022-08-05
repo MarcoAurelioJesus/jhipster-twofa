@@ -11,8 +11,6 @@ import com.mycompany.myapp.security.jwt.JWTFilter;
 import com.mycompany.myapp.security.jwt.TokenProvider;
 import com.mycompany.myapp.service.UserService;
 import com.mycompany.myapp.service.dto.AdminUserDTO;
-import com.mycompany.myapp.web.rest.errors.EmailAlreadyUsedException;
-import com.mycompany.myapp.web.rest.errors.LoginAlreadyUsedException;
 import com.mycompany.myapp.web.rest.vm.LoginVM;
 import dev.samstevens.totp.exceptions.QrGenerationException;
 import dev.samstevens.totp.qr.QrData;
@@ -21,8 +19,6 @@ import dev.samstevens.totp.qr.QrGenerator;
 import java.io.IOException;
 import java.util.*;
 import javax.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -53,12 +49,8 @@ public class UserJWTController {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    private final Logger log = LoggerFactory.getLogger(UserResource.class);
-
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
-
-    private final UserService userService;
 
     private final UserRepository userRepository;
 
@@ -70,7 +62,6 @@ public class UserJWTController {
     ) {
         this.tokenProvider = tokenProvider;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
-        this.userService = userService;
         this.userRepository = userRepository;
     }
 
@@ -80,11 +71,17 @@ public class UserJWTController {
             loginVM.getUsername(),
             loginVM.getPassword()
         );
-
+        Optional<User> existingUser = userRepository.findOneByLogin(loginVM.getUsername());
+        String keyQrCode = (existingUser.get().getEmail() + existingUser.get().getPassword()).replaceAll("[^a-zZ]", "").toUpperCase();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        if (!TwoFAGenerate.validationCodeTwoFA(loginVM.getTwofacode(), keyQrCode)) {
+            httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, "Invalid Code!");
+            return new ResponseEntity<>(httpHeaders, HttpStatus.BAD_REQUEST);
+        }
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.createToken(authentication, loginVM.isRememberMe());
-        HttpHeaders httpHeaders = new HttpHeaders();
+
         httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
         return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
     }
@@ -111,34 +108,25 @@ public class UserJWTController {
     }
 
     @PostMapping("/twofa")
-    public ResponseEntity<AdminUserDTO> twoFA(@Valid @RequestBody AdminUserDTO userDTO)
-        throws WriterException, IOException, QrGenerationException {
-        String secretKey = "QDWSM3OYBPGTEVSPB5FKVDM3CSNCWHVK";
-        log.debug("REST twoFA to User : {}", userDTO);
-        Optional<User> existingUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail());
-        if (existingUser.isPresent() && (!existingUser.get().getId().equals(userDTO.getId()))) {
-            throw new EmailAlreadyUsedException();
-        }
-        existingUser = userRepository.findOneByLogin(userDTO.getLogin().toLowerCase());
-        if (existingUser.isPresent() && (!existingUser.get().getId().equals(userDTO.getId()))) {
-            throw new LoginAlreadyUsedException();
-        }
-        Optional<AdminUserDTO> updatedUser = userService.updateUser(userDTO);
-        QrData data = qrDataFactory.newBuilder().label(userDTO.getEmail()).secret(secretKey).issuer("Company").build();
-        userDTO.setImageUrl(getDataUriForImage(qrGenerator.generate(data), qrGenerator.getImageMimeType()));
-        updatedUser.get().setImageUrl(getDataUriForImage(qrGenerator.generate(data), qrGenerator.getImageMimeType()));
-        updatedUser.get().setIsImageQRCode(true);
+    public ResponseEntity<User> twoFA(@RequestBody LoginVM loginVM) throws WriterException, IOException, QrGenerationException {
+        Optional<User> existingUser = userRepository.findOneByLogin(loginVM.getUsername());
+        existingUser = userRepository.findOneByLogin(loginVM.getUsername().toLowerCase());
+        String keyQrCode = (existingUser.get().getEmail() + existingUser.get().getPassword()).replaceAll("[^a-zZ]", "").toUpperCase();
+        QrData data = qrDataFactory.newBuilder().label(existingUser.get().getEmail()).secret(keyQrCode).issuer("Company").build();
+        existingUser.get().setImageUrl(getDataUriForImage(qrGenerator.generate(data), qrGenerator.getImageMimeType()));
+
         return ResponseUtil.wrapOrNotFound(
-            updatedUser,
-            HeaderUtil.createAlert(applicationName, "userManagement.twofa", userDTO.getImageUrl())
+            existingUser,
+            HeaderUtil.createAlert(applicationName, "userManagement.twofa", existingUser.get().getImageUrl())
         );
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<?> verify(@Valid @RequestBody String code) {
-        log.debug("REST twoFA verify code =: {}", code);
+    public ResponseEntity<AdminUserDTO> verify(@Valid @RequestBody AdminUserDTO userDTO) {
         HttpHeaders httpHeaders = new HttpHeaders();
-        if (!TwoFAGenerate.validationCodeTwoFA(code, "QDWSM3OYBPGTEVSPB5FKVDM3CSNCWHVK")) {
+        Optional<User> existingUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail());
+        String keyQrCode = (existingUser.get().getEmail() + existingUser.get().getPassword()).replaceAll("[^a-zZ]", "").toUpperCase();
+        if (!TwoFAGenerate.validationCodeTwoFA(userDTO.getTwoFACode(), keyQrCode)) {
             httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, "Invalid Code!");
             return new ResponseEntity<>(httpHeaders, HttpStatus.BAD_REQUEST);
         }
