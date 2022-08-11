@@ -9,6 +9,7 @@ export class Account {
     public login: string,
     public imageUrl: string | null,
     public isImageUrl: boolean,
+    public isTwofa: boolean,
     public twoFACode: string
   ) {}
 }

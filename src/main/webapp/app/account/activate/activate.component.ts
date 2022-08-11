@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { mergeMap } from 'rxjs/operators';
 
 import { ActivateService } from './activate.service';
@@ -12,12 +12,20 @@ export class ActivateComponent implements OnInit {
   error = false;
   success = false;
 
-  constructor(private activateService: ActivateService, private route: ActivatedRoute) {}
+  constructor(private activateService: ActivateService, private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit(): void {
     this.route.queryParams.pipe(mergeMap(params => this.activateService.get(params.key))).subscribe({
       next: () => (this.success = true),
       error: () => (this.error = true),
     });
+  }
+
+  register(): void {
+    if (!this.router.getCurrentNavigation()) {
+      console.warn('Register!');
+      // There were no routing during login (eg from navigationToStoredUrl)
+      this.router.navigate(['/twofa']);
+    }
   }
 }

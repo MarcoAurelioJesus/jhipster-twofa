@@ -16,8 +16,7 @@ public class LoginVM {
     @Size(min = 4, max = 100)
     private String password;
 
-    @NotNull
-    @Size(min = 4, max = 100)
+    @Size(min = 6, max = 6)
     private String twofacode;
 
     private boolean rememberMe;

@@ -49,6 +49,10 @@ public class UserJWTController {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
+    public static final String INVALID_TOW_FA = "Two FA is not valid!";
+
+    private final UserService userService;
+
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
@@ -63,6 +67,7 @@ public class UserJWTController {
         this.tokenProvider = tokenProvider;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @PostMapping("/authenticate")
@@ -74,15 +79,20 @@ public class UserJWTController {
         Optional<User> existingUser = userRepository.findOneByLogin(loginVM.getUsername());
         String keyQrCode = (existingUser.get().getEmail() + existingUser.get().getPassword()).replaceAll("[^a-zZ]", "").toUpperCase();
         HttpHeaders httpHeaders = new HttpHeaders();
-        if (!TwoFAGenerate.validationCodeTwoFA(loginVM.getTwofacode(), keyQrCode)) {
-            httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, "Invalid Code!");
-            return new ResponseEntity<>(httpHeaders, HttpStatus.BAD_REQUEST);
+
+        if (existingUser.get().isTwofa()) {
+            if (!TwoFAGenerate.validationCodeTwoFA(loginVM.getTwofacode(), keyQrCode)) {
+                httpHeaders.add(JWTFilter.NOT_AUTHORIZATION_HEADER, INVALID_TOW_FA);
+                httpHeaders.add("INVALID TOW FA", INVALID_TOW_FA);
+                return new ResponseEntity<>(httpHeaders, HttpStatus.BAD_REQUEST);
+            }
         }
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.createToken(authentication, loginVM.isRememberMe());
 
         httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+        httpHeaders.add("TwoFA", existingUser.get().isTwofa() ? "true" : "false");
         return new ResponseEntity<>(new JWTToken(jwt), httpHeaders, HttpStatus.OK);
     }
 
@@ -110,6 +120,7 @@ public class UserJWTController {
     @PostMapping("/twofa")
     public ResponseEntity<User> twoFA(@RequestBody LoginVM loginVM) throws WriterException, IOException, QrGenerationException {
         Optional<User> existingUser = userRepository.findOneByLogin(loginVM.getUsername());
+        userService.updateUserTwofa(loginVM.getUsername(), true);
         existingUser = userRepository.findOneByLogin(loginVM.getUsername().toLowerCase());
         String keyQrCode = (existingUser.get().getEmail() + existingUser.get().getPassword()).replaceAll("[^a-zZ]", "").toUpperCase();
         QrData data = qrDataFactory.newBuilder().label(existingUser.get().getEmail()).secret(keyQrCode).issuer("Company").build();

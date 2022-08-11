@@ -3,6 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Account } from 'app/core/auth/account.model';
 import { AccountService } from 'app/core/auth/account.service';
+import { LoginService } from 'app/login/login.service';
 import { TwoFaService } from './two-fa.service';
 @Component({
   selector: 'jhi-two-fa',
@@ -32,13 +33,14 @@ export class TwoFaComponent implements OnInit, AfterViewInit {
     private twoFaService: TwoFaService,
     private router: Router,
     private fb: FormBuilder,
-    private elRef: ElementRef
+    private elRef: ElementRef,
+    private loginService: LoginService
   ) {}
 
   ngOnInit(): void {
     this.accountService.identity().subscribe(() => {
       if (this.accountService.isAuthenticated()) {
-        this.router.navigate(['/login']);
+        this.router.navigate(['/twofa']);
       }
     });
   }
@@ -84,7 +86,8 @@ export class TwoFaComponent implements OnInit, AfterViewInit {
     if (!this.router.getCurrentNavigation()) {
       console.warn('Register!');
       // There were no routing during login (eg from navigationToStoredUrl)
-      this.router.navigate(['/login']);
+      this.loginService.logout();
+      this.router.navigate(['']);
     }
   }
   onSubmit(): void {

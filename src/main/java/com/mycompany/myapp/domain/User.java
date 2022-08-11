@@ -81,6 +81,9 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "reset_date")
     private Instant resetDate = null;
 
+    @Column(name = "is_twofa", nullable = false)
+    private boolean twofa = false;
+
     @JsonIgnore
     @ManyToMany
     @JoinTable(
@@ -197,6 +200,14 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.authorities = authorities;
     }
 
+    public boolean isTwofa() {
+        return twofa;
+    }
+
+    public void setTwofa(boolean twofa) {
+        this.twofa = twofa;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -227,6 +238,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
                 ", activated='" + activated + '\'' +
                 ", langKey='" + langKey + '\'' +
                 ", activationKey='" + activationKey + '\'' +
+                ", twofa='" + twofa + '\'' +
                 "}";
     }
 }

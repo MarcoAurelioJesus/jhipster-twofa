@@ -1,65 +1,62 @@
 <div class="col-md-12">
   <div class="card card-container">
     <img id="profile-img" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" class="profile-img-card" />
-    <form *ngIf="!isLoggedIn" name="form" (ngSubmit)="login()" [formGroup]="loginForm" novalidate>
-      <div class="form-group">
-        <label for="username">Login</label>
-        <input
-          type="text"
-          class="form-control"
-          name="username"
-          id="username"
-          placeholder="{{ 'global.form.username.placeholder' | translate }}"
-          formControlName="username"
-          #username
-          data-cy="username"
-        />
-        <div class="alert alert-danger" role="alert" *ngIf="authenticationError">Username is required!</div>
-      </div>
-      <div class="form-group">
-        <label for="password" jhiTranslate="login.form.password">Password</label>
-        <input
-          type="password"
-          class="form-control"
-          name="password"
-          id="password"
-          placeholder="{{ 'login.form.password.placeholder' | translate }}"
-          formControlName="password"
-          data-cy="password"
-        />
-        <div class="alert alert-danger" role="alert" *ngIf="authenticationError">
-          <div *ngIf="authenticationError">Password is required</div>
-          <div *ngIf="authenticationError">Password must be at least 6 characters</div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="twofacode" jhiTranslate="global.form.twofacode.label">Code</label>
-        <input
-          type="text"
-          class="form-control"
-          name="twofacode"
-          id="twofacode"
-          placeholder="{{ 'global.form.twofacode.placeholder' | translate }}"
-          formControlName="twofacode"
-          #username
-          data-cy="twofacode"
-        />
-      </div>
-
-      <div class="form-group">
-        <button class="btn btn-primary btn-block">Login</button>
-      </div>
-      <div class="form-group">
-        <label>Click here to register 2FA!</label>
+    <div class="form-group">
+      <form *ngIf="!isLoggedIn" name="form" (ngSubmit)="login()" [formGroup]="loginForm" novalidate>
         <div class="form-group">
-          <button (click)="register()" class="btn btn-primary btn-block" jhiTranslate="login.form.twofa.register">Cadastrar TWO FA</button>
+          <label for="username">Login</label>
+          <input
+            type="text"
+            class="form-control"
+            name="username"
+            id="username"
+            placeholder="{{ 'global.form.username.placeholder' | translate }}"
+            formControlName="username"
+            #username
+            data-cy="username"
+          />
+          <div class="alert alert-danger" role="alert" *ngIf="authenticationError">Username is required!</div>
         </div>
-      </div>
-      <div class="form-group">
-        <div class="alert alert-danger" role="alert" *ngIf="isLoginFailed">Login failed: {{ errorMessage }}</div>
-      </div>
-    </form>
+        <div class="form-group">
+          <label for="password" jhiTranslate="login.form.password">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            name="password"
+            id="password"
+            placeholder="{{ 'login.form.password.placeholder' | translate }}"
+            formControlName="password"
+            data-cy="password"
+          />
+          <div class="alert alert-danger" role="alert" *ngIf="authenticationError">
+            <div *ngIf="authenticationError">Password is required</div>
+            <div *ngIf="authenticationError">Password must be at least 6 characters</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="twofacode" jhiTranslate="global.form.twofacode.label">Code</label>
+          <input
+            type="text"
+            class="form-control"
+            name="twofacode"
+            id="twofacode"
+            placeholder="{{ 'global.form.twofacode.placeholder' | translate }}"
+            formControlName="twofacode"
+            #username
+            data-cy="twofacode"
+          />
+        </div>
+
+        <div class="form-group">
+          <button class="btn btn-primary btn-block">Login</button>
+        </div>
+
+        <div class="form-group">
+          <div class="alert alert-danger" role="alert" *ngIf="isLoginFailed">Login failed: {{ errorMessage }}</div>
+        </div>
+      </form>
+    </div>
     <div class="alert alert-success" *ngIf="isLoggedIn">
       Welcome {{ currentUser.displayName }} <br />Logged in as {{ currentUser.roles }}.
     </div>

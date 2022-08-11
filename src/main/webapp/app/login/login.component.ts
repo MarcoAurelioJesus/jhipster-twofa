@@ -66,21 +66,15 @@ export class LoginComponent implements OnInit, AfterViewInit {
           this.authenticationError = false;
           if (!this.router.getCurrentNavigation()) {
             // There were no routing during login (eg from navigationToStoredUrl)
-            this.router.navigate(['']);
+            data?.isTwofa ? this.router.navigate(['']) : this.router.navigate(['/twofa']);
           }
         },
         err => {
+          this.authenticationError = false;
+          console.warn('error', err);
           this.errorMessage = err.error.message;
           this.isLoginFailed = true;
         }
       );
-  }
-
-  register(): void {
-    if (!this.router.getCurrentNavigation()) {
-      console.warn('Register!');
-      // There were no routing during login (eg from navigationToStoredUrl)
-      this.router.navigate(['/twofa']);
-    }
   }
 }

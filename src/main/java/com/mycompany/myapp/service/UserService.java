@@ -322,4 +322,18 @@ public class UserService {
             Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
         }
     }
+
+    public void updateUserTwofa(String login, Boolean isTwofa) {
+        userRepository
+            .findOneByLogin(login)
+            .ifPresent(user -> {
+                if (user.getLogin().equals(login)) {
+                    user.setTwofa(isTwofa);
+                    this.clearUserCaches(user);
+                }
+                user.setTwofa(isTwofa);
+                this.clearUserCaches(user);
+                log.debug("Changed Information for User: {}", user);
+            });
+    }
 }

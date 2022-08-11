@@ -52,6 +52,8 @@ public class AdminUserDTO {
 
     private String twoFACode;
 
+    private Boolean isTwofa;
+
     public AdminUserDTO() {
         // Empty constructor needed for Jackson.
     }
@@ -74,6 +76,7 @@ public class AdminUserDTO {
         this.lastModifiedBy = user.getLastModifiedBy();
         this.lastModifiedDate = user.getLastModifiedDate();
         this.authorities = user.getAuthorities().stream().map(Authority::getName).collect(Collectors.toSet());
+        this.isTwofa = user.isTwofa();
     }
 
     public Long getId() {
@@ -196,6 +199,10 @@ public class AdminUserDTO {
         return isImageQRCode;
     }
 
+    public Boolean getIsTwofa() {
+        return isTwofa;
+    }
+
     // prettier-ignore
     @Override
     public String toString() {
@@ -212,6 +219,7 @@ public class AdminUserDTO {
                 ", lastModifiedBy='" + lastModifiedBy + '\'' +
                 ", lastModifiedDate=" + lastModifiedDate +
                 ", authorities=" + authorities +
+                ", isTwofa=" + isTwofa +
                 "}";
     }
 }

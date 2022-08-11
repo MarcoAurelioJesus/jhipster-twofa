@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/auth/account.model';
 import { PasswordService } from './password.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'jhi-password',
@@ -21,7 +22,12 @@ export class PasswordComponent implements OnInit {
     confirmPassword: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
   });
 
-  constructor(private passwordService: PasswordService, private accountService: AccountService, private fb: FormBuilder) {}
+  constructor(
+    private passwordService: PasswordService,
+    private accountService: AccountService,
+    private fb: FormBuilder,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.account$ = this.accountService.identity();
@@ -40,6 +46,14 @@ export class PasswordComponent implements OnInit {
         next: () => (this.success = true),
         error: () => (this.error = true),
       });
+    }
+  }
+
+  register(): void {
+    if (!this.router.getCurrentNavigation()) {
+      console.warn('Register!');
+      // There were no routing during login (eg from navigationToStoredUrl)
+      this.router.navigate(['/twofa']);
     }
   }
 }

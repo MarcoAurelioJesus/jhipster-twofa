@@ -7,7 +7,7 @@
       "rememberme": "Remember me",
       "button": "Sign in",
       "twofa": "Submit",
-      "twofa.register": "Register"
+      "twofa.register": "Register 2FA"
     },
     "messages": {
       "error": {
